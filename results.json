@@ -1,0 +1,103 @@
+[
+  {
+    "website_name": "www.apple.com",
+    "company_name": "",
+    "address": "",
+    "mobile_number": "",
+    "mail": [],
+    "core_service": "",
+    "target_customer": "",
+    "probable_pain_point": "",
+    "outreach_opener": ""
+  },
+  {
+    "website_name": "basecamp.com",
+    "company_name": "",
+    "address": "",
+    "mobile_number": "",
+    "mail": [],
+    "core_service": "",
+    "target_customer": "",
+    "probable_pain_point": "",
+    "outreach_opener": ""
+  },
+  {
+    "website_name": "samsung.com",
+    "company_name": "",
+    "address": "",
+    "mobile_number": "",
+    "mail": [],
+    "core_service": "",
+    "target_customer": "",
+    "probable_pain_point": "",
+    "outreach_opener": ""
+  },
+  {
+    "website_name": "Basecamp",
+    "company_name": "",
+    "address": "",
+    "mobile_number": "",
+    "mail": [
+      "jason@basecamp.com"
+    ],
+    "core_service": "Project management system",
+    "target_customer": "Companies, teams, and non-profits",
+    "probable_pain_point": "Disorganized project management and communication",
+    "outreach_opener": "Are you tired of juggling multiple apps and tools to manage your team's projects and communication?"
+  },
+  {
+    "website_name": "www.example-tech-solutions.com",
+    "company_name": "",
+    "address": "",
+    "mobile_number": "",
+    "mail": [],
+    "core_service": "",
+    "target_customer": "",
+    "probable_pain_point": "",
+    "outreach_opener": ""
+  },
+  {
+    "website_name": "Apple",
+    "company_name": "Apple",
+    "address": "",
+    "mobile_number": "",
+    "mail": [],
+    "core_service": "Apple offers a range of products and services including iPhones, MacBooks, and Apple TV",
+    "target_customer": "Individuals and businesses looking for technology and entertainment solutions",
+    "probable_pain_point": "Difficulty finding innovative and integrated technology solutions that meet their needs",
+    "outreach_opener": "Are you looking to upgrade your business technology with innovative and integrated solutions like iPhones and MacBooks?"
+  },
+  {
+    "website_name": "eqw.ai",
+    "company_name": "",
+    "address": "",
+    "mobile_number": "",
+    "mail": [],
+    "core_service": "",
+    "target_customer": "",
+    "probable_pain_point": "",
+    "outreach_opener": ""
+  },
+  {
+    "website_name": "Relu",
+    "company_name": "Relu Consultancy",
+    "address": "",
+    "mobile_number": "",
+    "mail": [],
+    "core_service": "Web scraping and automation services",
+    "target_customer": "Businesses in various industries such as real estate, e-commerce, and finance",
+    "probable_pain_point": "Difficulty in collecting and extracting valuable data from websites, leading to manual work and inaccurate business insights",
+    "outreach_opener": "Are you tired of manually collecting data from websites and wanting to unlock the potential of web scraping for your business?"
+  },
+  {
+    "website_name": "Relu Company",
+    "company_name": "Relu Consultancy",
+    "address": "",
+    "mobile_number": "",
+    "mail": [],
+    "core_service": "Web scraping and automation services",
+    "target_customer": "Businesses in various industries such as real estate, e-commerce, and finance",
+    "probable_pain_point": "Difficulty in collecting and extracting valuable data from websites, leading to manual work and inaccurate business insights",
+    "outreach_opener": "Are you tired of manual data extraction holding back your business growth? Our custom web scraping solutions can help you unlock accurate and actionable insights."
+  }
+]

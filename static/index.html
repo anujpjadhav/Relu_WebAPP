@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Company Research</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #f9f8f6;
+      --surface:   #ffffff;
+      --border:    #e4e2dd;
+      --text:      #1a1917;
+      --muted:     #7a7670;
+      --accent:    #2563eb;
+      --accent-bg: #eff6ff;
+      --success:   #16a34a;
+      --error:     #dc2626;
+      --mono:      'DM Mono', monospace;
+      --sans:      'DM Sans', sans-serif;
+      --radius:    10px;
+      --shadow:    0 1px 3px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.04);
+    }
+
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 0 0 80px;
+    }
+
+    /* ── Header ── */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 40px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    header .logo {
+      width: 32px; height: 32px;
+      background: var(--text);
+      border-radius: 8px;
+      display: grid; place-items: center;
+    }
+    header .logo svg { width: 18px; height: 18px; }
+    header h1 { font-size: 1rem; font-weight: 600; letter-spacing: -.02em; }
+    header p  { font-size: .8rem; color: var(--muted); margin-left: auto; }
+
+    /* ── Layout ── */
+    .container { max-width: 900px; margin: 0 auto; padding: 40px 24px 0; }
+
+    /* ── Section titles ── */
+    .section-title {
+      font-size: .7rem;
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    /* ── Enrich Panel ── */
+    .enrich-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      box-shadow: var(--shadow);
+      margin-bottom: 40px;
+    }
+
+    .input-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    @media (max-width: 600px) { .input-row { grid-template-columns: 1fr; } }
+
+    .field label {
+      display: block;
+      font-size: .75rem;
+      font-weight: 500;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .field input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      font-family: var(--sans);
+      font-size: .9rem;
+      background: var(--bg);
+      color: var(--text);
+      outline: none;
+      transition: border-color .15s;
+    }
+    .field input:focus { border-color: var(--accent); background: #fff; }
+    .field input::placeholder { color: #bbb; }
+
+    .btn-enrich {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 22px;
+      background: var(--text);
+      color: #fff;
+      border: none;
+      border-radius: 7px;
+      font-family: var(--sans);
+      font-size: .9rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background .15s, transform .1s;
+    }
+    .btn-enrich:hover  { background: #333; }
+    .btn-enrich:active { transform: scale(.98); }
+    .btn-enrich:disabled { background: #aaa; cursor: not-allowed; }
+
+    /* ── Status bar ── */
+    .status-bar {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      margin-top: 16px;
+      padding: 12px 16px;
+      border-radius: 7px;
+      font-size: .85rem;
+      font-weight: 500;
+    }
+    .status-bar.loading { display: flex; background: var(--accent-bg); color: var(--accent); }
+    .status-bar.success { display: flex; background: #f0fdf4; color: var(--success); }
+    .status-bar.error   { display: flex; background: #fef2f2; color: var(--error); }
+
+    .spinner {
+      width: 16px; height: 16px;
+      border: 2px solid currentColor;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      flex-shrink: 0;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Result Card ── */
+    .result-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-top: 20px;
+      box-shadow: var(--shadow);
+      animation: slideIn .25s ease;
+    }
+    @keyframes slideIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+    .card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      gap: 12px;
+    }
+    .card-header .name  { font-size: 1.1rem; font-weight: 600; }
+    .card-header .cname { font-size: .82rem; color: var(--muted); margin-top: 2px; }
+    .card-header .badge {
+      font-size: .7rem;
+      font-family: var(--mono);
+      padding: 3px 8px;
+      background: var(--accent-bg);
+      color: var(--accent);
+      border-radius: 4px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 600px) { .grid-2 { grid-template-columns: 1fr; } }
+
+    .info-block { margin-bottom: 4px; }
+    .info-block .label {
+      font-size: .7rem;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .info-block .value {
+      font-size: .88rem;
+      line-height: 1.5;
+      color: var(--text);
+    }
+    .info-block .value.mono {
+      font-family: var(--mono);
+      font-size: .82rem;
+    }
+    .info-block .value.empty { color: var(--muted); font-style: italic; }
+
+    .tag-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px; }
+    .tag {
+      font-size: .78rem;
+      font-family: var(--mono);
+      padding: 3px 8px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+    }
+
+    .divider { height: 1px; background: var(--border); margin: 20px 0; }
+
+    .outreach-box {
+      background: var(--accent-bg);
+      border-left: 3px solid var(--accent);
+      padding: 14px 16px;
+      border-radius: 0 7px 7px 0;
+      font-size: .88rem;
+      line-height: 1.6;
+      color: #1e40af;
+    }
+
+    /* ── Results Table ── */
+    .results-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .btn-show {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 18px;
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      font-family: var(--sans);
+      font-size: .85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background .15s, border-color .15s;
+    }
+    .btn-show:hover { background: var(--bg); border-color: #ccc; }
+
+    .count-badge {
+      font-size: .7rem;
+      background: var(--text);
+      color: #fff;
+      padding: 2px 7px;
+      border-radius: 10px;
+      font-weight: 600;
+    }
+
+    /* .table-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    } */
+     .table-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow-x: auto;  /* ← enables horizontal scroll */
+    }
+
+    /* table { width: 100%; border-collapse: collapse; } */
+    table { width: max-content; min-width: 100%; border-collapse: collapse; }
+    thead { background: var(--bg); }
+    th {
+      padding: 11px 16px;
+      text-align: left;
+      font-size: .7rem;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    /* td {
+      padding: 13px 16px;
+      font-size: .85rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+      max-width: 200px;
+    } */
+    td {
+      padding: 13px 16px;
+      font-size: .85rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+      min-width: 160px;   /* ← each column has breathing room */
+      max-width: 280px;   /* ← but won't go too wide */
+      white-space: normal;
+      word-break: break-word;
+    }
+
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--bg); }
+
+    td .mono { font-family: var(--mono); font-size: .78rem; }
+    td .pill {
+      display: inline-block;
+      padding: 2px 8px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-size: .75rem;
+      font-family: var(--mono);
+    }
+    td .truncate {
+      max-width: 180px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      display: block;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 48px 24px;
+      color: var(--muted);
+      font-size: .9rem;
+    }
+    .empty-state .icon { font-size: 2rem; margin-bottom: 12px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+    </svg>
+  </div>
+  <h1>Company Research</h1>
+  <p>AI-powered business intelligence</p>
+</header>
+
+<div class="container">
+
+  <!-- ── Enrich Section ── -->
+  <p class="section-title">Enrich a Company</p>
+  <div class="enrich-panel">
+    <div class="input-row">
+      <div class="field">
+        <label>Website Name <span style="color:#bbb">(optional label)</span></label>
+        <input id="inp-name" type="text" placeholder="e.g. Basecamp" />
+      </div>
+      <div class="field">
+        <label>Company URL <span style="color:#dc2626">*</span></label>
+        <input id="inp-url" type="url" placeholder="https://example.com" />
+      </div>
+    </div>
+    <button class="btn-enrich" id="btn-enrich" onclick="enrichCompany()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+      </svg>
+      Enrich Company
+    </button>
+
+    <!-- Status bar -->
+    <div class="status-bar" id="status-bar">
+      <div class="spinner" id="status-spinner"></div>
+      <span id="status-text">Scraping website and analysing with AI…</span>
+    </div>
+
+    <!-- Enrich result -->
+    <div id="enrich-result"></div>
+  </div>
+
+  <!-- ── Results Section ── -->
+  <div class="results-header">
+    <p class="section-title" style="margin-bottom:0">All Enriched Companies</p>
+    <button class="btn-show" onclick="loadResults()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.95"/>
+      </svg>
+      Show All Results
+      <span class="count-badge" id="count-badge">0</span>
+    </button>
+  </div>
+
+  <div id="results-section"></div>
+
+</div>
+
+<script>
+// ── Render a single result card ──────────────────────────
+function renderCard(d) {
+  const val = (v) => v && v !== 'N/A' ? v : null;
+  const emails = Array.isArray(d.mail) ? d.mail : (d.mail ? [d.mail] : []);
+
+  return `
+    <div class="result-card">
+      <div class="card-header">
+        <div>
+          <div class="name">${d.website_name || '—'}</div>
+          <div class="cname">${d.company_name || ''}</div>
+        </div>
+        <span class="badge">enriched</span>
+      </div>
+
+      <div class="grid-2">
+        <div class="info-block">
+          <div class="label">Core Service</div>
+          <div class="value">${val(d.core_service) || '<span class="empty">—</span>'}</div>
+        </div>
+        <div class="info-block">
+          <div class="label">Target Customer</div>
+          <div class="value">${val(d.target_customer) || '<span class="empty">—</span>'}</div>
+        </div>
+        <div class="info-block">
+          <div class="label">Address</div>
+          <div class="value">${val(d.address) || '<span class="empty">Not found</span>'}</div>
+        </div>
+        <div class="info-block">
+          <div class="label">Phone</div>
+          <div class="value mono">${val(d.mobile_number) || '<span class="empty">Not found</span>'}</div>
+        </div>
+      </div>
+
+      ${emails.length ? `
+        <div class="info-block" style="margin-top:16px">
+          <div class="label">Email(s)</div>
+          <div class="tag-list">${emails.map(e => `<span class="tag">${e}</span>`).join('')}</div>
+        </div>` : ''}
+
+      <div class="divider"></div>
+
+      <div class="info-block" style="margin-bottom:14px">
+        <div class="label">Probable Pain Point</div>
+        <div class="value">${val(d.probable_pain_point) || '<span class="empty">—</span>'}</div>
+      </div>
+
+      ${val(d.outreach_opener) ? `
+        <div class="info-block">
+          <div class="label">Outreach Opener</div>
+          <div class="outreach-box">${d.outreach_opener}</div>
+        </div>` : ''}
+    </div>`;
+}
+
+// ── Enrich ───────────────────────────────────────────────
+async function enrichCompany() {
+  const url  = document.getElementById('inp-url').value.trim();
+  const name = document.getElementById('inp-name').value.trim();
+
+  if (!url) {
+    showStatus('error', 'Please enter a company URL.');
+    return;
+  }
+
+  const btn = document.getElementById('btn-enrich');
+  btn.disabled = true;
+  document.getElementById('enrich-result').innerHTML = '';
+  showStatus('loading', 'Scraping website and analysing with AI… this may take 20–40s');
+
+  try {
+    const res = await fetch('/enrich', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url, website_name: name }),
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.detail || 'Server error');
+    }
+
+    const data = await res.json();
+    showStatus('success', `✓ Successfully enriched — ${data.company_name || data.website_name}`);
+    document.getElementById('enrich-result').innerHTML = renderCard(data);
+    updateCount();
+
+  } catch (e) {
+    showStatus('error', `Error: ${e.message}`);
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+// ── Load all results ─────────────────────────────────────
+async function loadResults() {
+  const section = document.getElementById('results-section');
+  section.innerHTML = '<div class="empty-state"><div class="icon">⏳</div>Loading…</div>';
+
+  try {
+    const res  = await fetch('/results');
+    const data = await res.json();
+
+    document.getElementById('count-badge').textContent = data.length;
+
+    if (!data.length) {
+      section.innerHTML = '<div class="empty-state"><div class="icon">📭</div>No results yet. Enrich a company above.</div>';
+      return;
+    }
+
+    section.innerHTML = `
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Company</th>
+              <th>Core Service</th>
+              <th>Target Customer</th>
+              <th>Email(s)</th>
+              <th>Phone</th>
+              <th>Pain Point</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${data.map(d => {
+              const emails = Array.isArray(d.mail) ? d.mail : (d.mail ? [d.mail] : []);
+              return `<tr>
+                <td>
+                  <strong>${d.website_name || '—'}</strong>
+                  <br/><span style="color:var(--muted);font-size:.78rem">${d.company_name || ''}</span>
+                </td>
+                <td><span class="truncate">${d.core_service || '—'}</span></td>
+                <td><span class="truncate">${d.target_customer || '—'}</span></td>
+                <td>${emails.length ? emails.map(e => `<span class="pill">${e}</span>`).join('<br/>') : '<span style="color:var(--muted)">—</span>'}</td>
+                <td><span class="mono">${d.mobile_number || '—'}</span></td>
+                <td><span class="truncate">${d.probable_pain_point || '—'}</span></td>
+              </tr>`;
+            }).join('')}
+          </tbody>
+        </table>
+      </div>`;
+
+  } catch (e) {
+    section.innerHTML = `<div class="empty-state"><div class="icon">❌</div>Failed to load results: ${e.message}</div>`;
+  }
+}
+
+// ── Helpers ──────────────────────────────────────────────
+function showStatus(type, msg) {
+  const bar = document.getElementById('status-bar');
+  const spinner = document.getElementById('status-spinner');
+  bar.className = 'status-bar ' + type;
+  document.getElementById('status-text').textContent = msg;
+  spinner.style.display = type === 'loading' ? 'block' : 'none';
+}
+
+async function updateCount() {
+  try {
+    const res  = await fetch('/results');
+    const data = await res.json();
+    document.getElementById('count-badge').textContent = data.length;
+  } catch {}
+}
+
+// Load count on page load
+updateCount();
+
+// Allow Enter key on URL input
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('inp-url').addEventListener('keydown', e => {
+    if (e.key === 'Enter') enrichCompany();
+  });
+});
+</script>
+</body>
+</html>
