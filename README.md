@@ -9,7 +9,7 @@ pip install -r requirements.txt
 export GROQ_API_KEY=your-key-here
 uvicorn main:app --reload
 ```
-Open http://localhost:8000
+
 Website live link : https://relu-webapp.onrender.com/
 
 ## Deploy to Railway
